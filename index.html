@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marry Me 💍</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#ff758c,#ff7eb3);
+}
+.container{
+  position:relative;
+  background:#fff;
+  width:90%;
+  max-width:380px;
+  padding:20px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.2);
+  overflow:hidden;
+}
+h1{color:#ff3e6c;margin:15px 0}
+p{color:#555;margin-bottom:20px}
+.btn{position:relative;height:140px}
+.btn a{
+  display:block;
+  width:80%;
+  margin:10px auto;
+  padding:12px;
+  border-radius:30px;
+  text-decoration:none;
+  color:#fff;
+  font-size:18px;
+  user-select:none;
+}
+.yes{background:#ff3e6c}
+.no{
+  background:#555;
+  position:absolute;
+  left:10%;
+  top:60px;
+}
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  pointer-events:none;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="container">
+
+  <!-- GIF -->
+  <div class="tenor-gif-embed"
+       data-postid="22885016"
+       data-share-method="host"
+       data-width="100%"
+       data-aspect-ratio="1.5"></div>
+  <script async src="https://tenor.com/embed.js"></script>
+
+  <h1>Will you marry me? 💖</h1>
+  <p>I know 😉</p>
+
+  <div class="btn">
+    <a href="#" class="yes" onclick="yesClick()">Yes 😍</a>
+    <a href="#" class="no" id="noBtn">No 🙄</a>
+  </div>
+</div>
+
+<!-- Background music -->
+<audio id="music" autoplay loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+/* =========================
+   ENDLESS NO BUTTON 😈
+========================= */
+const noBtn = document.getElementById("noBtn");
+const container = document.querySelector(".container");
+
+["mouseover","touchstart","click"].forEach(evt=>{
+  noBtn.addEventListener(evt, runaway);
+});
+
+function runaway(){
+  const c = container.getBoundingClientRect();
+  const b = noBtn.getBoundingClientRect();
+
+  const maxX = c.width - b.width;
+  const maxY = c.height - b.height;
+
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+
+  noBtn.style.left = x + "px";
+  noBtn.style.top  = y + "px";
+}
+
+/* =========================
+   AUTO YES (5 sec)
+========================= */
+setTimeout(()=>yesClick(),5000);
+
+/* =========================
+   YES CLICK + CONFETTI
+========================= */
+function yesClick(){
+  startConfetti();
+  document.body.innerHTML = `
+    <canvas id="confetti"></canvas>
+    <div style="
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#ff7eb3;
+      color:white;
+      text-align:center;
+      font-family:Arial;">
+      <h1>Yayyy 💍❤️<br>We’re getting married!</h1>
+    </div>`;
+  startConfetti();
+}
+
+/* =========================
+   CONFETTI
+========================= */
+function startConfetti(){
+  const canvas=document.getElementById("confetti");
+  const ctx=canvas.getContext("2d");
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+
+  const pieces=[];
+  for(let i=0;i<180;i++){
+    pieces.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      r:Math.random()*6+4,
+      c:`hsl(${Math.random()*360},100%,50%)`,
+      s:Math.random()*3+2
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      ctx.beginPath();
+      ctx.fillStyle=p.c;
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fill();
+      p.y+=p.s;
+      if(p.y>canvas.height) p.y=0;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+</script>
+
+</body>
+</html>
